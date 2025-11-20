@@ -6,3 +6,20 @@ CREATE TABLE IF NOT EXISTS "User" (
   "password" varchar(255),
   "phoneNumber" varchar(255)
 );
+
+CREATE TABLE IF NOT EXISTS "Category" (
+  "categoryId" serial PRIMARY KEY,
+  "categoryLabel" varchar(255),
+  "userId" integer REFERENCES "User"("userId"),
+
+  UNIQUE("categoryLabel", "userId")
+);
+
+CREATE TABLE IF NOT EXISTS "Transaction" (
+  "transactionId" serial PRIMARY KEY,
+  "userId" integer REFERENCES "User"("userId"),
+  "categoryId" integer REFERENCES "Category"("categoryId"),
+  "amount" decimal,
+  "transactionDate" timestamp,
+  "description" varchar(255)
+);

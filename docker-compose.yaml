@@ -6,6 +6,8 @@ services:
     container_name: backend
     ports:
       - "3000:3000"
+    env_file:
+      - ./backend/.env.docker
     restart: unless-stopped
     develop:
       watch:
