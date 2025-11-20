@@ -22,3 +22,23 @@ model User {
     password  String
     phoneNumber String
 }
+
+model Category {
+    categoryId Int     @id @default(autoincrement())
+    categoryLabel String
+    userId     Int
+
+    @@unique([categoryLabel, userId])
+    transactions Transaction[]
+}
+
+model Transaction {
+    transactionId Int    @id @default(autoincrement())
+    amount        Float
+    date          DateTime
+    description   String
+    categoryId    Int
+    userId        Int
+
+    category Category @relation(fields: [categoryId], references: [categoryId])
+}
