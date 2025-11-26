@@ -79,7 +79,15 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
             .catch((err) => {
                 console.error("Error adding transaction", err);
             });
+    };
 
+    const deleteCategory = async (categoryId: number) => {
+        try {
+            await axios.delete(`${API_URL}/categories/${categoryId}`);
+            fetchCategories();
+        } catch (error) {
+            console.error("Error deleting category", error);
+        }
     };
 
     useEffect(() => {
@@ -124,11 +132,14 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
                         <div>
                             <label className="block text-white mb-2">Catégorie :</label>
                             <AutocompleteFreeText
-                                options={categories.map(category => category.categoryLabel)}
+                                options={categories.map(c => ({ id: c.categoryId, label: c.categoryLabel }))}
                                 value={categoryValue}
                                 onChange={setCategoryValue}
                                 onSelect={(option) => {
                                     setCategoryValue(option);
+                                }}
+                                onDelete={(id) => {
+                                    deleteCategory(id);
                                 }}
                                 placeholder="Sélectionnez ou entrez une catégorie"
                                 className="w-full"

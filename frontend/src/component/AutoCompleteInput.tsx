@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Trash2 } from "lucide-react";
 
+type Opt = { id: number; label: string };
 
 interface AutocompleteFreeTextProps {
-    options: string[];
+    options: Opt[];
     value?: string;
     placeholder?: string;
     onChange?: (value: string) => void;
     onSelect?: (option: string) => void;
+    onDelete?: (option: number) => void;
     className?: string;
     maxSuggestions?: number;
 }
@@ -17,6 +20,7 @@ export default function AutocompleteFreeText({
     placeholder,
     onChange,
     onSelect,
+    onDelete,
     className = "",
     maxSuggestions = 8,
 }: AutocompleteFreeTextProps) {
@@ -34,9 +38,7 @@ export default function AutocompleteFreeText({
     }, [value]);
 
     const filtered = options
-        .filter((o) =>
-            o.toLowerCase().includes((inputValue ?? "").toLowerCase().trim())
-        )
+        .filter((o: Opt) => o.label.toLowerCase().includes((inputValue ?? "").toLowerCase().trim()))
         .slice(0, maxSuggestions);
 
     useEffect(() => {
@@ -82,7 +84,7 @@ export default function AutocompleteFreeText({
         } else if (e.key === "Enter") {
             if (highlightIndex >= 0 && highlightIndex < filtered.length) {
                 e.preventDefault();
-                selectOption(filtered[highlightIndex]);
+                selectOption(filtered[highlightIndex].label);
             } else {
                 onChange?.(inputValue);
                 setIsOpen(false);
@@ -139,20 +141,29 @@ export default function AutocompleteFreeText({
                         return (
                             <li
                                 id={`autocomplete-item-${idx}`}
-                                key={opt + idx}
+                                key={opt.id}
                                 role="option"
                                 aria-selected={isHighlighted}
                                 onMouseDown={(e) => {
-                                    e.preventDefault();
-                                    selectOption(opt);
+                                    selectOption(opt.label);
                                 }}
                                 onMouseEnter={() => setHighlightIndex(idx)}
-                                className={`cursor-pointer px-3 py-2 text-sm ${isHighlighted
-                                        ? "bg-slate-600 text-white"
-                                        : "text-gray-200 hover:bg-gray-700"
+                                className={`group relative cursor-pointer px-3 py-2 text-sm ${isHighlighted
+                                    ? "bg-slate-600 text-white"
+                                    : "text-gray-200 hover:bg-gray-700"
                                     }`}
                             >
-                                {opt}
+                                <button
+                                    type="button"
+                                    onMouseDown={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        onDelete?.(opt.id);
+                                    }}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 opacity-0 group-hover:opacity-100 hover:bg-red-600/20 rounded-md cursor-pointer">
+                                    <Trash2 className="w-4 h-4 text-red-600" />
+                                </button>
+                                {opt.label}
                             </li>
                         );
                     })}

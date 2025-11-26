@@ -40,5 +40,5 @@ model Transaction {
     categoryId    Int
     userId        Int
 
-    category Category @relation(fields: [categoryId], references: [categoryId])
+    category Category @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade)
 }

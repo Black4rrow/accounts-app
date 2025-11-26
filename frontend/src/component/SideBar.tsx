@@ -32,7 +32,6 @@ const SideBar: React.FC<SideMenuProps> = ({
     const menuItems = [
         { id: "home", label: "Accueil", icon: Home, onClick: () => navigate('/') },
         { id: "profile", label: "Profil", icon: User, onClick: () => navigate('/profile') },
-        { id: "history", label: "Historique", icon: Activity, onClick: () => navigate('/history') },
         { id: "statistics", label: "Statistiques", icon: ChartColumnBig, onClick: () => navigate('/statistics') },
     ]
 
