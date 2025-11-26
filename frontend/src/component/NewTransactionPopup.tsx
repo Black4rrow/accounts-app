@@ -11,11 +11,13 @@ interface NewTransactionPopupProps {
 }
 
 const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
+    const currentDate = new Date().toISOString().split("T")[0];
     const [show, setShow] = useState(false);
     const [categories, setCategories] = useState<Array<{ categoryId: number; categoryLabel: string }>>([]);
     const [categoryValue, setCategoryValue] = useState<string>("");
-    const [amount, setAmount] = useState<number | "">(-1);
-    const [date, setDate] = useState<string>("");
+    const [amount, setAmount] = useState<number | "">("");
+    const [isExpense, setIsExpense] = useState<boolean>(true);
+    const [date, setDate] = useState<string>(currentDate);
     const [description, setDescription] = useState<string>("");
     const { userId } = useAuth();
 
@@ -42,19 +44,19 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
         const transactionDate = date;
         const transactionDescription = description;
 
-        if(categories.find(cat => cat.categoryLabel === categoryLabel) === undefined) {
+        if (categories.find(cat => cat.categoryLabel === categoryLabel) === undefined) {
             axios.post(`${API_URL}/categories`, {
                 userId,
                 categoryLabel,
             })
-            .then(() => {
-                console.log("Category created:", categoryLabel);
-                fetchCategories();
-            })
-            .catch((err) => {
-                console.error("Error creating category", err);
-            }
-            );
+                .then(() => {
+                    console.log("Category created:", categoryLabel);
+                    fetchCategories();
+                })
+                .catch((err) => {
+                    console.error("Error creating category", err);
+                }
+                );
         }
 
         axios
@@ -64,6 +66,7 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
                 amount: transactionAmount,
                 date: transactionDate,
                 description: transactionDescription,
+                isExpense: isExpense,
             })
             .then((res) => {
                 console.log("Transaction added:", res.data);
@@ -85,6 +88,7 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
 
     useEffect(() => {
         setShow(Boolean(props.show));
+        setDate(currentDate);
     }, [props.show]);
 
     return (
@@ -106,8 +110,14 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
                         <div className="relative">
                             <label className="block text-white mb-2">Montant :</label>
                             <div className="relative">
-                                <input type="number" className="w-full rounded-md border border-gray-700 bg-stone-800 text-white px-3 py-4 focus:outline-none focus:ring-2 focus:ring-stone-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" value={amount} onChange={(e) => setAmount(e.target.value === "" ? "" : parseFloat(e.target.value))} required />
+                                <input type="number" className="w-full rounded-md border border-gray-700 bg-stone-800 text-white px-3 py-4 focus:outline-none focus:ring-2 focus:ring-stone-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" value={amount} onChange={(e) => {
+                                    setAmount(e.target.value === "" ? "" : parseFloat(e.target.value));
+                                }} required />
                                 <span className="absolute right-3 top-30/100 text-gray-200">€</span>
+                            </div>
+                            <div className="flex flex-row gap-4 mt-2">
+                                <button type="button" onClick={() => setIsExpense(true)} className={`w-full py-2 text-white border border-red-900 rounded-md ${isExpense ? "bg-red-800" : "bg-red-800/10 hover:bg-red-600/33"}`}>Dépense</button>
+                                <button type="button" onClick={() => setIsExpense(false)} className={`w-full py-2 text-white border border-green-900 rounded-md ${!isExpense ? "bg-green-800" : "bg-green-800/10 hover:bg-green-600/33"} `}>Revenu</button>
                             </div>
                         </div>
 

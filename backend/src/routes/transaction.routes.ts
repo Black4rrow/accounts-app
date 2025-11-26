@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { getAllCategories, createCategory, createTransaction, getUserTransactions } from "../controllers/transaction.controller";
+import { createTransaction, getUserTransactions, deleteTransaction } from "../controllers/transaction.controller";
 
 const router = Router();
 
-router.get("/categories/:userId", getAllCategories);
-router.post("/categories", createCategory);
 router.post("/transactions", createTransaction);
 router.get("/transactions/:userId/:limit?/:offset?", getUserTransactions);
+router.delete("/transactions/:transactionId", deleteTransaction);
 
 export default router;

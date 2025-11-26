@@ -3,8 +3,9 @@ import ProtectedRoute from "./component/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import "./App.css";
 
-import Home from "./home/home";
-import LoginPage from "./user/LoginPage.tsx";
+import Home from "./pages/home.tsx";
+import LoginPage from "./pages/user/LoginPage.tsx";
+import TransactionHistory from "./pages/transaction/history.tsx";
 
 export default function App() {
   return (
@@ -17,6 +18,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <TransactionHistory />
             </ProtectedRoute>
           }
         />

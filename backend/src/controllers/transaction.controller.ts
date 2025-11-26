@@ -1,37 +1,13 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
 
-export async function getAllCategories(req: Request, res: Response) {
-    const userId = parseInt(req.params.userId);
-    try {
-        const categories = await prisma.category.findMany(
-            { where: { userId: userId } }
-        );
-        res.status(200).json(categories);
-    } catch (error) {
-        res.status(500).json({ message: "Error retrieving categories", error });
-    }
-}
-
-export async function createCategory(req: Request, res: Response) {
-    const { userId, categoryLabel } = req.body;
-    try {
-        const newCategory = await prisma.category.create({
-            data: {
-                userId,
-                categoryLabel,
-            },
-        });
-        res.status(201).json(newCategory);
-    } catch (error) {
-        res.status(500).json({ message: "Error creating category", error });
-    }
-}
-
 export async function createTransaction(req: Request, res: Response) {
-    const { userId, amount, categoryLabel, description, date } = req.body;
+    var { userId, amount, categoryLabel, description, date, isExpense } = req.body;
 
-    // Find category
+    if(isExpense) {
+        amount = -Math.abs(amount);
+    }
+
     let category = await prisma.category.findFirst({
         where: {
             userId,
@@ -87,3 +63,15 @@ export async function getUserTransactions(req: Request, res: Response) {
         res.status(500).json({ message: "Error retrieving transactions", error });
     }
 } 
+
+export async function deleteTransaction(req: Request, res: Response) {
+    const transactionId = parseInt(req.params.transactionId);
+    try {
+        await prisma.transaction.delete({
+            where: { transactionId: transactionId },
+        });
+        res.status(200).json({ message: "Transaction deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting transaction", error });
+    }
+}

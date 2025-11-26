@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./LoginPage.css"
-import { useAuth } from "../context/AuthContext.tsx";
+import { useAuth } from "../../context/AuthContext.tsx";
 
 export default function LoginPage() {
     const { login: authLogin } = useAuth();
