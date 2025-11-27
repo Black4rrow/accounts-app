@@ -160,7 +160,7 @@ export default function AutocompleteFreeText({
                                         e.preventDefault();
                                         onDelete?.(opt.id);
                                     }}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 opacity-0 group-hover:opacity-100 hover:bg-red-600/20 rounded-md cursor-pointer">
+                                    className={`${onDelete ? "" : "hidden"} absolute right-3 top-1/2 -translate-y-1/2 p-1 opacity-0 group-hover:opacity-100 hover:bg-red-600/20 rounded-md cursor-pointer`}>
                                     <Trash2 className="w-4 h-4 text-red-600" />
                                 </button>
                                 {opt.label}

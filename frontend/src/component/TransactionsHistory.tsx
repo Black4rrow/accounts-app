@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Transaction } from "../types/Types";
+import { Transaction } from "../utils/Types";
 import { Trash2 } from "lucide-react";
 
 interface TransactionsHistoryProps {
@@ -46,7 +46,7 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
                                 </button>
 
                                 <div className="col-span-3 p-0">
-                                    <div className="h-16 pl-2 pr-3 flex items-center justify-start text-white">
+                                    <div className="h-16 pl-2 pr-3 flex items-center justify-start text-white text-sm sm:text-md">
                                         {new Date(transaction.date).toLocaleDateString()}
                                     </div>
                                 </div>

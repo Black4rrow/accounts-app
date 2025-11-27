@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { X } from "lucide-react";
-import AutocompleteFreeText from "./AutoCompleteInput";
+import AutocompleteFreeText from "../AutoCompleteInput";
 
 interface NewTransactionPopupProps {
     show?: boolean;

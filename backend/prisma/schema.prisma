@@ -30,6 +30,7 @@ model Category {
 
     @@unique([categoryLabel, userId])
     transactions Transaction[]
+    budgets      Budget[]
 }
 
 model Transaction {
@@ -39,6 +40,18 @@ model Transaction {
     description   String
     categoryId    Int
     userId        Int
+
+    category Category @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade)
+}
+
+model Budget {
+    categoryId Int
+    month      Int
+    year       Int
+    userId     Int
+    amount     Float
+
+    @@id([categoryId, month, year, userId])
 
     category Category @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade)
 }
