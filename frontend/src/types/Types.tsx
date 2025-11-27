@@ -1,5 +1,5 @@
 export type Transaction = {
-    transactionId: string;
+    transactionId: number;
     userId: string;
     amount: number;
     date: string;
@@ -14,4 +14,15 @@ export type User = {
     mail: string;
     password: string;
     phoneNumber: string;
+};
+
+export type Category = {
+    categoryId: number;
+    userId: string;
+    categoryLabel: string;
+};
+
+export type CategoriesSumup = {
+    categoryLabel: string;
+    totalAmount: number;
 };

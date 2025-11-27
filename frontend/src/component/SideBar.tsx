@@ -1,5 +1,6 @@
 import React, { act } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router";
 
 import {
     Home,
@@ -10,6 +11,7 @@ import {
 } from "lucide-react";
 
 interface SideMenuProps {
+    className?: string;
     activeItem?: string;
     onItemClick?: (itemId: string) => void;
     userFirstName?: string;
@@ -17,6 +19,7 @@ interface SideMenuProps {
 }
 
 const SideBar: React.FC<SideMenuProps> = ({
+    className = "",
     activeItem = "home",
     onItemClick = () => { },
     userFirstName = "FirstName",
@@ -24,15 +27,16 @@ const SideBar: React.FC<SideMenuProps> = ({
 }) => {
     const { userId, mail, logout } = useAuth();
 
+    let navigate = useNavigate();
+
     const menuItems = [
-        { id: "home", label: "Accueil", icon: Home },
-        { id: "profile", label: "Profil", icon: User },
-        { id: "activities", label: "Historique", icon: Activity },
-        { id: "statistics", label: "Statistiques", icon: ChartColumnBig },
+        { id: "home", label: "Accueil", icon: Home, onClick: () => navigate('/') },
+        { id: "profile", label: "Profil", icon: User, onClick: () => navigate('/profile') },
+        { id: "statistics", label: "Statistiques", icon: ChartColumnBig, onClick: () => navigate('/statistics') },
     ]
 
     return (
-        <div className="w-64 h-screen bg-neutral-800 text-white flex flex-col">
+        <div className={`${className} w-64 h-screen bg-neutral-800 text-white flex-col`}>
             <div className="p-6">
                 <h1 className="text-2xl font-bold text-white">Compti</h1>
             </div>
@@ -43,7 +47,7 @@ const SideBar: React.FC<SideMenuProps> = ({
                     return (
                         <button
                             key={item.id}
-                            onClick={() => onItemClick(item.id)}
+                            onClick={() => {onItemClick(item.id); item.onClick()}}
                             className={`w-full flex items-center gap-3 px-3 py-2.5 mb-1 rounded-lg transition-all ${activeItem === item.id
                                 ? 'bg-gray-500 text-white'
                                 : 'text-gray-300 hover:bg-gray-700'
