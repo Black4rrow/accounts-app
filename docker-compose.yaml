@@ -6,6 +6,10 @@ services:
     container_name: backend
     ports:
       - "3000:3000"
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
     env_file:
       - ./backend/.env.docker
     restart: unless-stopped
@@ -22,8 +26,8 @@ services:
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: dev
       POSTGRES_DB: accounts-app-db
-    ports:
-      - "5432:5432"
+    #ports:
+    # - "5432:5432"
     volumes:
       - ./backend/initdb:/docker-entrypoint-initdb.d:ro
       - db-data:/var/lib/postgresql/data
@@ -33,11 +37,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: frontend
     env_file:
       - ./frontend/.env.docker
     ports:
       - "5173:80"
     restart: unless-stopped
+    depends_on:
+      - backend
     develop:
       watch:
         - path: ./frontend

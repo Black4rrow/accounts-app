@@ -71,6 +71,7 @@ export async function getSumup(req: Request, res: Response) {
             const cat = categories.find(c => c.categoryId === g.categoryId);
 
             return {
+                categoryId: g.categoryId,
                 categoryLabel: cat?.categoryLabel ?? "Unknown",
                 totalAmount: g._sum.amount ?? 0,
             };

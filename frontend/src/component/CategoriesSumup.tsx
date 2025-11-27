@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
-import { CategoriesSumup } from "../types/Types";
+import { CategoriesSumup } from "../utils/Types";
 import {
     ArrowLeft, ArrowRight
 } from "lucide-react";
+
+import { formatMonthYear } from "../utils/Functions";
 
 interface CategoriesSumupProps {
     className?: string;
@@ -64,11 +66,6 @@ export default function CategoriesSumup({className = ""}: CategoriesSumupProps) 
         const now = new Date();
         setYearToShow(now.getFullYear());
         setMonthToShow(now.getMonth() + 1);
-    }
-
-    function formatMonthYear(year: number, month: number): string {
-        const date = new Date(year, month - 1);
-        return date.toLocaleString("fr-FR", { month: "long", year: "numeric" });
     }
 
     return (

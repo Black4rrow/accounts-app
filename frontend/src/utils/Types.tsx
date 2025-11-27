@@ -23,6 +23,16 @@ export type Category = {
 };
 
 export type CategoriesSumup = {
+    categoryId: number;
     categoryLabel: string;
     totalAmount: number;
+};
+
+export type Budget = {
+    categoryId: number;
+    categoryLabel: string;
+    month: number;
+    year: number;
+    userId: number;
+    amount: number;
 };

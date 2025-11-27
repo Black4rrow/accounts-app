@@ -23,3 +23,12 @@ CREATE TABLE IF NOT EXISTS "Transaction" (
   "transactionDate" timestamp,
   "description" varchar(255)
 );
+
+CREATE TABLE IF NOT EXISTS "Budget" (
+  "categoryId" integer REFERENCES "Category"("categoryId"),
+  "month" integer,
+  "year" integer,
+  "userId" integer REFERENCES "User"("userId"),
+  "amount" decimal,
+  PRIMARY KEY ("categoryId", "month", "year", "userId")
+);
