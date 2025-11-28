@@ -4,6 +4,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: backend
+    networks:
+      - internal
     ports:
       - "3000:3000"
     expose:
@@ -26,6 +28,8 @@ services:
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: dev
       POSTGRES_DB: accounts-app-db
+    networks:
+      - internal
     #ports:
     # - "5432:5432"
     volumes:
@@ -45,6 +49,8 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
+    networks:
+      - internal
     develop:
       watch:
         - path: ./frontend
@@ -52,3 +58,6 @@ services:
 
 volumes:
   db-data:
+
+networks:
+  internal:
