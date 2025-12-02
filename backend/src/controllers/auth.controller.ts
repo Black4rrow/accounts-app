@@ -18,7 +18,7 @@ export async function login(req: Request, res: Response) {
     const token = jwt.sign(
       { userId: user.userId, mail: user.mail },
       JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "30d" }
     );
 
     return res.json({
@@ -47,7 +47,7 @@ export async function register(req: Request, res: Response) {
     const token = jwt.sign(
       { userId: user.userId, mail: user.mail },
       JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "30d" }
     );
 
     return res.status(201).json({

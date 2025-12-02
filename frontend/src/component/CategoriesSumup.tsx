@@ -92,7 +92,7 @@ export default function CategoriesSumup({className = ""}: CategoriesSumupProps) 
                 ) : (
                     <ul>
                         {categoriesSumup.map((category) => (
-                            <li key={category.categoryLabel} className="flex justify-between mb-2 text-white">
+                            <li key={category.categoryLabel} className="flex justify-between px-4 mb-2 text-white">
                                 <span>{category.categoryLabel}</span>
                                 <span className={category.totalAmount < 0 ? "text-red-300" : "text-green-300"} >{category.totalAmount.toFixed(2)}</span>
                             </li>
@@ -100,7 +100,7 @@ export default function CategoriesSumup({className = ""}: CategoriesSumupProps) 
                     </ul>
                 )}
             </div>
-            <div className="w-full mt-4 flex justify-between space-x-2">
+            <div className="w-full mt-4 flex justify-between px-4 space-x-2">
                 <span className="text-white self-center">Total :</span>
                 <span className={`self-center ${total < 0 ? "text-red-500" : "text-green-500"}`}> {total.toFixed(2)} </span>
             </div>
