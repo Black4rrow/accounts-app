@@ -64,7 +64,7 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
 
         try {
             const start = offset * TRANSACTIONS_TO_FETCH;
-            const res = await axios.get(`${API_URL}/transactions/${userId}/${limit}/${start}`);
+            const res = await axios.get(`${API_URL}/transactions/${userId}`, { params: { limit: limit, offset: start } });
 
             if (tokenAtCall !== fetchTokenRef.current) {
                 return;
@@ -170,7 +170,7 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
                                         <button
                                             onClick={() => deleteTransaction(transaction.transactionId)}
                                             aria-label="Supprimer transaction"
-                                            className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-200/90 sm:bg-none p-2 sm:p-1 rounded-lg hover:bg-red-600/20 z-20"
+                                            className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-200/90 sm:bg-none p-2 sm:p-1 rounded-md hover:bg-red-600/20 z-20"
                                             type="button"
                                         >
                                             <Trash2 className="w-4 h-4 text-red-800 sm:text-red-600" />
@@ -207,7 +207,7 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
 
             <div className="w-full flex sm:flex-col justify-between items-center gap-4 mt-4">
                 <button
-                    className="w-full rounded-lg bg-slate-700 text-white px-6 py-3 hover:bg-slate-600 transition-colors"
+                    className="w-full rounded-md bg-slate-700 text-white px-6 py-3 hover:bg-slate-600 transition-colors"
                     onClick={() => newTransactionPopupCloseHandler(true)}
                 >
                     Ajouter une transaction

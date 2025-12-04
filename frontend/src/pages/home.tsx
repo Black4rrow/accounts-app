@@ -63,11 +63,11 @@ export default function Home() {
                 <div className="grid grid-cols-1 xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 auto-rows-[100px] gap-4 w-full p-2 sm:p-6">
                     {/*Recent transactions*/}
                     <TransactionsHistory
-                        className="col-span-1 xl:col-span-3 lg:col-span-2 md:col-span-2 row-span-5 border border-stone-300 rounded-lg p-2 sm:p-4 flex flex-col h-full"
+                        className="col-span-1 xl:col-span-3 lg:col-span-2 md:col-span-2 row-span-5 border border-stone-300 rounded-md p-2 sm:p-4 flex flex-col h-full"
                     />
 
                     <CategoriesSumup
-                        className="col-span-1 xl:col-span-3 lg:col-span-2 md:col-span-2 row-span-5 border border-stone-300 rounded-lg p-2 sm:p-4"
+                        className="col-span-1 xl:col-span-3 lg:col-span-2 md:col-span-2 row-span-5 border border-stone-300 rounded-md p-2 sm:p-4"
                         month={currentMonth}
                         year={currentYear}
                         addMonth={addMonth}
@@ -76,7 +76,7 @@ export default function Home() {
                     />
 
                     <Budgets
-                        className="col-span-1 xl:col-span-4 lg:col-span-3 md:col-span-2 row-span-4 border border-stone-300 rounded-lg p-2 sm:p-4"
+                        className="col-span-1 xl:col-span-4 lg:col-span-3 md:col-span-2 row-span-4 border border-stone-300 rounded-md p-2 sm:p-4"
                         month={currentMonth}
                         year={currentYear}
                         addMonth={addMonth}

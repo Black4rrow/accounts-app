@@ -136,7 +136,7 @@ export default function Budgets({ className = "", month, year, addMonth, subtrac
 
                 <div className="mt-auto w-full sm:w-1/2">
                     <button
-                        className="w-full rounded-lg bg-slate-700 text-white px-6 py-3 hover:bg-slate-600 transition-colors"
+                        className="w-full rounded-md bg-slate-700 text-white px-6 py-3 hover:bg-slate-600 transition-colors"
                         onClick={() => setShowNewTransactionPopup(true)}
                     >
                         Ajouter un budget

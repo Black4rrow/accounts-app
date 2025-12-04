@@ -68,7 +68,7 @@ const SideBar: React.FC<SideMenuProps> = ({
                             <button
                                 key={item.id}
                                 onClick={() => { onItemClick(item.id); item.onClick(); setOpen(false); }}
-                                className={`w-full flex items-center gap-3 px-3 py-2.5 mb-1 rounded-lg transition-all ${activeItem === item.id
+                                className={`w-full flex items-center gap-3 px-3 py-2.5 mb-1 rounded-md transition-all ${activeItem === item.id
                                     ? 'bg-gray-500 text-white'
                                     : 'text-gray-300 hover:bg-gray-700'
                                     }`}

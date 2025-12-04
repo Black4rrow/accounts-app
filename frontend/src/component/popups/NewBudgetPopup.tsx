@@ -86,7 +86,7 @@ const NewBudgetPopup: React.FC<NewBudgetPopupProps> = (props) => {
 
             <div className="flex w-full h-full gap-2 items-center justify-center px-4 md:px-0">
 
-                <div className="w-full h-2/3 max-w-lg bg-stone-700 rounded-lg shadow-lg p-6 relative flex flex-col overflow-y-auto">
+                <div className="w-full h-2/3 max-w-lg bg-stone-700 rounded-md shadow-lg p-6 relative flex flex-col overflow-y-auto">
                     <div className="absolute top-4 right-4 cursor-pointer" onClick={closeHandler}>
                         <X className="w-6 h-6 text-white" />
                     </div>

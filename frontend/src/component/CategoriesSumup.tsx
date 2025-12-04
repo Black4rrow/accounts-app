@@ -42,7 +42,7 @@ export default function CategoriesSumup({className = "", month, year, addMonth, 
     const total = categoriesSumup.reduce((acc, category) => acc + category.totalAmount, 0);
 
     return (
-        <div className={`bg-stone-800 border border-stone-700 rounded-lg p-4 flex flex-col ${className}`}>
+        <div className={`bg-stone-800 border border-stone-700 rounded-md p-4 flex flex-col ${className}`}>
             <h2 className="text-lg font-semibold mb-4 text-white">Total par catégorie - {formatMonthYear(year, month)}</h2>
             <div className="w-full flex flex-row justify-center mb-4">
                 <button className="text-white flex flex-row items-center border border-stone-700 rounded-l-lg p-2 cursor-pointer hover:bg-stone-700/80" onClick={subtractMonth}>
