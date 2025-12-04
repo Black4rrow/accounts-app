@@ -10,18 +10,15 @@ import { formatMonthYear } from "../utils/Functions";
 
 interface CategoriesSumupProps {
     className?: string;
+    month: number;
+    year: number;
+    addMonth: () => void;
+    subtractMonth: () => void;
+    setMonthToNow: () => void;
 }
 
-export default function CategoriesSumup({className = ""}: CategoriesSumupProps) {
+export default function CategoriesSumup({className = "", month, year, addMonth, setMonthToNow, subtractMonth}: CategoriesSumupProps) {
     const [categoriesSumup, setCategoriesSumup] = useState<Array<CategoriesSumup>>([]);
-    const [yearToShow, setYearToShow] = useState<number>(() => {
-        const now = new Date();
-        return now.getFullYear();
-    });
-    const [monthToShow, setMonthToShow] = useState<number>(() => {
-        const now = new Date();
-        return now.getMonth() + 1;
-    });
     const { userId } = useAuth();
 
     const API_URL = (import.meta as any).env.VITE_API_URL;
@@ -31,8 +28,8 @@ export default function CategoriesSumup({className = ""}: CategoriesSumupProps) 
             .get(`${API_URL}/categories/sumup/${userId}`,
                 {
                     params: {
-                        year: yearToShow,
-                        month: monthToShow,
+                        year: year,
+                        month: month,
                     },
                 }
             )
@@ -40,44 +37,20 @@ export default function CategoriesSumup({className = ""}: CategoriesSumupProps) 
                 setCategoriesSumup(res.data);
             })
             .catch((err) => console.error("Error fetching categories sumup", err));
-    }, [userId, yearToShow, monthToShow]);
+    }, [userId, year, month]);
 
     const total = categoriesSumup.reduce((acc, category) => acc + category.totalAmount, 0);
 
-    function addMonth(){
-        if(monthToShow === 12){
-            setMonthToShow(1);
-            setYearToShow(yearToShow + 1);
-        } else {
-            setMonthToShow(monthToShow + 1);
-        }
-    }
-
-    function subtractMonth(){
-        if(monthToShow === 1){
-            setMonthToShow(12);
-            setYearToShow(yearToShow - 1);
-        } else {
-            setMonthToShow(monthToShow - 1);
-        }
-    }
-
-    function setCurrentMonth(){
-        const now = new Date();
-        setYearToShow(now.getFullYear());
-        setMonthToShow(now.getMonth() + 1);
-    }
-
     return (
-        <div className={`bg-stone-800 border border-stone-700 rounded-lg p-4 flex flex-col ${className}`}>
-            <h2 className="text-lg font-semibold mb-4 text-white">Total par catégorie - {formatMonthYear(yearToShow, monthToShow)}</h2>
+        <div className={`bg-stone-800 border border-stone-700 rounded-md p-4 flex flex-col ${className}`}>
+            <h2 className="text-lg font-semibold mb-4 text-white">Total par catégorie - {formatMonthYear(year, month)}</h2>
             <div className="w-full flex flex-row justify-center mb-4">
                 <button className="text-white flex flex-row items-center border border-stone-700 rounded-l-lg p-2 cursor-pointer hover:bg-stone-700/80" onClick={subtractMonth}>
                     <ArrowLeft className="w-5 h-5 text-white" />
                     <p>Précédent</p>
                 </button>
 
-                <button className="text-white flex flex-row items-center border border-stone-700 p-2 cursor-pointer hover:bg-stone-700/80" onClick={setCurrentMonth}>
+                <button className="text-white flex flex-row items-center border border-stone-700 p-2 cursor-pointer hover:bg-stone-700/80" onClick={setMonthToNow}>
                     <p>Actuel</p>
                 </button>
 

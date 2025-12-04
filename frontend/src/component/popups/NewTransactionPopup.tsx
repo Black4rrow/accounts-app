@@ -52,33 +52,33 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
                 .then(() => {
                     console.log("Category created:", categoryLabel);
                     fetchCategories();
+
+                    axios
+                        .post(`${API_URL}/transactions`, {
+                            userId,
+                            categoryLabel,
+                            amount: transactionAmount,
+                            date: transactionDate,
+                            description: transactionDescription,
+                            isExpense: isExpense,
+                        })
+                        .then((res) => {
+                            console.log("Transaction added:", res.data);
+                            setAmount("");
+                            setCategoryValue("");
+                            setDate("");
+                            setDescription("");
+                            closeHandler(new MouseEvent("click") as unknown as React.MouseEvent);
+                        })
+                        .catch((err) => {
+                            console.error("Error adding transaction", err);
+                        });
                 })
                 .catch((err) => {
                     console.error("Error creating category", err);
                 }
                 );
         }
-
-        axios
-            .post(`${API_URL}/transactions`, {
-                userId,
-                categoryLabel,
-                amount: transactionAmount,
-                date: transactionDate,
-                description: transactionDescription,
-                isExpense: isExpense,
-            })
-            .then((res) => {
-                console.log("Transaction added:", res.data);
-                setAmount("");
-                setCategoryValue("");
-                setDate("");
-                setDescription("");
-                closeHandler(new MouseEvent("click") as unknown as React.MouseEvent);
-            })
-            .catch((err) => {
-                console.error("Error adding transaction", err);
-            });
     };
 
     const deleteCategory = async (categoryId: number) => {
@@ -107,12 +107,12 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
 
             <div className="flex w-full h-full gap-2 items-center justify-center px-4 md:px-0">
 
-                <div className="w-full h-2/3 max-w-lg bg-stone-700 rounded-lg shadow-lg p-6 relative flex flex-col overflow-y-auto">
+                <div className="w-full h-2/3 max-w-lg bg-stone-700 rounded-md shadow-lg p-6 relative flex flex-col overflow-y-auto">
                     <div className="absolute top-4 right-4 cursor-pointer" onClick={closeHandler}>
                         <X className="w-6 h-6 text-white" />
                     </div>
 
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-4 h-95/100 w-full">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
                         <h2 className="text-2xl font-semibold text-white mb-4">Nouvelle Transaction</h2>
 
                         <div className="relative">

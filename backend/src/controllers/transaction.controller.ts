@@ -39,14 +39,48 @@ export async function createTransaction(req: Request, res: Response) {
 }
 
 export async function getUserTransactions(req: Request, res: Response) {
-    const { userId, limit, offset } = req.params;
+    const { userId } = req.params;
     const userIdInt = parseInt(userId);
+    const limit = req.query.limit as string;
+    const offset = req.query.offset as string;
     try {
         const transactions = await prisma.transaction.findMany({
             where: { userId: userIdInt },
-            orderBy: { date: 'desc' },
+            orderBy: { createdAt: 'desc' },
             take: limit ? parseInt(limit) : undefined,
             skip: offset ? parseInt(offset) : undefined,
+            include: {
+                category: true,
+            },
+        });
+        res.status(200).json(transactions.map(t => ({
+            transactionId: t.transactionId,
+            userId: t.userId,
+            amount: t.amount,
+            date: t.date,
+            description: t.description,
+            categoryLabel: t.category.categoryLabel
+        })));
+    } catch (error) {
+        res.status(500).json({ message: "Error retrieving transactions", error });
+    }
+} 
+
+export async function getMonthlyTransactions(req: Request, res: Response) {
+    const { userId } = req.params;
+    const userIdInt = parseInt(userId);
+    const month = parseInt(req.query.month as string);
+    const year = parseInt(req.query.year as string);
+    try {
+        const transactions = await prisma.transaction.findMany({
+            where: { 
+                userId: userIdInt,
+                date : {
+                    gte: new Date(year, month - 1, 1),
+                    lt: new Date(year, month, 1)
+                }
+             },
+            orderBy: { createdAt: 'desc' },
             include: {
                 category: true,
             },

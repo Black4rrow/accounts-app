@@ -23,8 +23,6 @@ const SideBar: React.FC<SideMenuProps> = ({
     className = "",
     activeItem = "home",
     onItemClick = () => { },
-    userFirstName = "FirstName",
-    userLastName = "LastName",
 }) => {
     const [open, setOpen] = React.useState<boolean>(false);
     const { userId, mail, logout } = useAuth();
@@ -46,7 +44,7 @@ const SideBar: React.FC<SideMenuProps> = ({
                 <Menu className="w-7 h-7" />
             </button>
 
-            <div className={`${className} fixed sm:static sm:translate-x-0 left-0 top-0 w-64 h-screen bg-neutral-800 text-white flex flex-col z-50
+            <div className={`${className} fixed sm:translate-x-0 left-0 top-0 w-64 h-screen bg-neutral-800 text-white flex flex-col z-50
                     transition-transform duration-300
                     ${open ? "translate-x-0" : "-translate-x-full sm:translate-x-0"}
                     pb-[env(safe-area-inset-bottom)]`}>
@@ -70,7 +68,7 @@ const SideBar: React.FC<SideMenuProps> = ({
                             <button
                                 key={item.id}
                                 onClick={() => { onItemClick(item.id); item.onClick(); setOpen(false); }}
-                                className={`w-full flex items-center gap-3 px-3 py-2.5 mb-1 rounded-lg transition-all ${activeItem === item.id
+                                className={`w-full flex items-center gap-3 px-3 py-2.5 mb-1 rounded-md transition-all ${activeItem === item.id
                                     ? 'bg-gray-500 text-white'
                                     : 'text-gray-300 hover:bg-gray-700'
                                     }`}
@@ -83,17 +81,10 @@ const SideBar: React.FC<SideMenuProps> = ({
                 </nav>
 
                 <div className="border-t p-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-neutral-300 rounded-full flex items-center justify-center text-white font-semibold">
-                            {userFirstName.charAt(0)}{userLastName.charAt(0)}
-                        </div>
-                        <div className="flex-1">
-                            <p className="font-medium text-white">{userFirstName} {userLastName}</p>
-                        </div>
-                        <button className="p-2 text-gray-300 hover:text-red-600" onClick={logout}>
-                            <LogOut className="w-4 h-4" />
-                        </button>
-                    </div>
+                    <button className="flex items-center gap-3 flex-row p-2 text-gray-300 hover:text-red-600" onClick={logout}>
+                        <p className="font-medium text-white">Se déconnecter</p>
+                        <LogOut className="w-4 h-4" />
+                    </button>
                 </div>
             </div>
         </>

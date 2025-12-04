@@ -130,7 +130,7 @@ export default function LoginPage() {
                                 <input className="w-full px-4 py-3 rounded-xl border-2 border-neutral-200 focus:border-teal-500 focus:outline-none transition-colors placeholder-neutral-400 text-white" type="email" id="email" ref={emailRef} placeholder="example@mail.com" required />
                             </div>
 
-                            <div className="flex gap-4">
+                            <div className="flex flex-col md:flex-row gap-4">
                                 <div>
                                     <label htmlFor="first-name" className="block text-sm font-medium text-neutral-300 mb-2">
                                         Prénom <span className="text-red-500">*</span>
@@ -145,7 +145,7 @@ export default function LoginPage() {
                                 </div>
                             </div>
 
-                            <div className="flex gap-4">
+                            <div className="flex flex-col md:flex-row gap-4">
                                 <div>
                                     <label htmlFor="password" className="block text-sm font-medium text-neutral-300 mb-2">
                                         Mot de passe <span className="text-red-500">*</span>

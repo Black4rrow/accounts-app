@@ -40,6 +40,7 @@ model Transaction {
     description   String
     categoryId    Int
     userId        Int
+    createdAt     DateTime @default(now())
 
     category Category @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade)
 }
