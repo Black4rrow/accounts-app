@@ -112,7 +112,7 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
                         <X className="w-6 h-6 text-white" />
                     </div>
 
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-4 h-95/100 w-full">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
                         <h2 className="text-2xl font-semibold text-white mb-4">Nouvelle Transaction</h2>
 
                         <div className="relative">

@@ -44,7 +44,7 @@ export async function getUserTransactions(req: Request, res: Response) {
     try {
         const transactions = await prisma.transaction.findMany({
             where: { userId: userIdInt },
-            orderBy: { date: 'desc' },
+            orderBy: { createdAt: 'desc' },
             take: limit ? parseInt(limit) : undefined,
             skip: offset ? parseInt(offset) : undefined,
             include: {

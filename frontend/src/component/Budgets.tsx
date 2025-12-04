@@ -12,13 +12,16 @@ import NewBudgetPopup from "./popups/NewBudgetPopup";
 
 interface BudgetsProps {
     className?: string;
+    month: number;
+    year: number;
+    addMonth: () => void;
+    subtractMonth: () => void;
+    setMonthToNow: () => void;
 }
 
-export default function Budgets({ className = "" }: BudgetsProps) {
+export default function Budgets({ className = "", month, year, addMonth, subtractMonth, setMonthToNow }: BudgetsProps) {
     const [budgets, setBudgets] = useState<Budget[]>([]);
     const [categoriesSumup, setCategoriesSumup] = useState<CategoriesSumup[]>([]);
-    const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
-    const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
     const [showNewTransactionPopup, setShowNewTransactionPopup] = useState<boolean>(false);
     const { userId } = useAuth();
 
@@ -40,7 +43,7 @@ export default function Budgets({ className = "" }: BudgetsProps) {
 
     async function fetchBudgets() {
         axios
-            .get(`${API_URL}/budget/${userId}/${currentMonth}/${currentYear}`)
+            .get(`${API_URL}/budget/${userId}/${month}/${year}`)
             .then((res) => {
                 setBudgets(res.data);
             })
@@ -53,41 +56,17 @@ export default function Budgets({ className = "" }: BudgetsProps) {
     async function fetchCategoriesSumup() {
         axios
             .get(`${API_URL}/categories/sumup/${userId}`,
-                { params: { month: currentMonth, year: currentYear } }
+                { params: { month: month, year: year } }
             ).then((res) => {
                 setCategoriesSumup(res.data);
             })
             .catch((err) => console.error("Error fetching categories sumup", err));
     }
 
-    function addMonth() {
-        if (currentMonth === 12) {
-            setCurrentMonth(1);
-            setCurrentYear(currentYear + 1);
-        } else {
-            setCurrentMonth(currentMonth + 1);
-        }
-    }
-
-    function subtractMonth() {
-        if (currentMonth === 1) {
-            setCurrentMonth(12);
-            setCurrentYear(currentYear - 1);
-        } else {
-            setCurrentMonth(currentMonth - 1);
-        }
-    }
-
-    function setMonthToNow() {
-        const now = new Date();
-        setCurrentYear(now.getFullYear());
-        setCurrentMonth(now.getMonth() + 1);
-    }
-
     useEffect(() => {
         fetchBudgets();
         fetchCategoriesSumup();
-    }, [currentMonth, currentYear]);
+    }, [month, year]);
 
     useEffect(() => {
         fetchBudgets();
@@ -96,11 +75,11 @@ export default function Budgets({ className = "" }: BudgetsProps) {
 
     return (
         <div className={className}>
-            <NewBudgetPopup show={showNewTransactionPopup} onClose={newBudgetPopupCloseHandler} month={currentMonth} year={currentYear} />
+            <NewBudgetPopup show={showNewTransactionPopup} onClose={newBudgetPopupCloseHandler} month={month} year={year} />
             <div className="flex flex-col h-full gap-4">
                 <div className="flex flex-col gap-4">
-                    <h2 className="text-xl font-semibold text-white">
-                        Budgets - {formatMonthYear(currentYear, currentMonth)}
+                    <h2 className="text-xl font-semibold text-white text-center">
+                        Budgets - {formatMonthYear(year, month)}
                     </h2>
                     <div className="w-full flex flex-row justify-center mb-4">
                         <button className="text-white flex flex-row items-center border border-stone-700 rounded-l-lg p-2 cursor-pointer hover:bg-stone-700/80" onClick={subtractMonth}>

@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS "Transaction" (
   "categoryId" integer REFERENCES "Category"("categoryId"),
   "amount" decimal,
   "transactionDate" timestamp,
-  "description" varchar(255)
+  "description" varchar(255),
+  "createdAt" timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS "Budget" (

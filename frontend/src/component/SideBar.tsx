@@ -46,7 +46,7 @@ const SideBar: React.FC<SideMenuProps> = ({
                 <Menu className="w-7 h-7" />
             </button>
 
-            <div className={`${className} fixed sm:static sm:translate-x-0 left-0 top-0 w-64 h-screen bg-neutral-800 text-white flex flex-col z-50
+            <div className={`${className} fixed sm:translate-x-0 left-0 top-0 w-64 h-screen bg-neutral-800 text-white flex flex-col z-50
                     transition-transform duration-300
                     ${open ? "translate-x-0" : "-translate-x-full sm:translate-x-0"}
                     pb-[env(safe-area-inset-bottom)]`}>
