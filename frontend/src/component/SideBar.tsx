@@ -23,8 +23,6 @@ const SideBar: React.FC<SideMenuProps> = ({
     className = "",
     activeItem = "home",
     onItemClick = () => { },
-    userFirstName = "FirstName",
-    userLastName = "LastName",
 }) => {
     const [open, setOpen] = React.useState<boolean>(false);
     const { userId, mail, logout } = useAuth();
@@ -83,17 +81,10 @@ const SideBar: React.FC<SideMenuProps> = ({
                 </nav>
 
                 <div className="border-t p-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-neutral-300 rounded-full flex items-center justify-center text-white font-semibold">
-                            {userFirstName.charAt(0)}{userLastName.charAt(0)}
-                        </div>
-                        <div className="flex-1">
-                            <p className="font-medium text-white">{userFirstName} {userLastName}</p>
-                        </div>
-                        <button className="p-2 text-gray-300 hover:text-red-600" onClick={logout}>
-                            <LogOut className="w-4 h-4" />
-                        </button>
-                    </div>
+                    <button className="flex items-center gap-3 flex-row p-2 text-gray-300 hover:text-red-600" onClick={logout}>
+                        <p className="font-medium text-white">Se déconnecter</p>
+                        <LogOut className="w-4 h-4" />
+                    </button>
                 </div>
             </div>
         </>

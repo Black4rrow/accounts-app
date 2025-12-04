@@ -13,7 +13,6 @@ import Budgets from "../component/Budgets";
 
 export default function Home() {
     const [activeItem, setActiveItem] = useState<string>("home");
-    const [user, setUser] = useState<User | null>(null);
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
 
@@ -47,23 +46,12 @@ export default function Home() {
         setCurrentMonth(now.getMonth() + 1);
     }
 
-    useEffect(() => {
-        axios
-            .get(`${API_URL}/users/${userId}`)
-            .then((res) => {
-                setUser(res.data);
-            })
-            .catch((err) => console.error("Error fetching users", err));
-    }, [userId]);
-
     return (
         <div className="flex min-h-screen w-screen bg-stone-900 relative">
             <SideBar
                 className=""
                 activeItem={activeItem}
                 onItemClick={setActiveItem}
-                userFirstName={user?.firstname}
-                userLastName={user?.lastname}
             />
 
             <main className="w-full min-h-screen mt-16 sm:ml-64 sm:mt-2 flex flex-col">
