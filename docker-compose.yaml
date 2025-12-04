@@ -35,6 +35,7 @@ services:
     volumes:
       - ./backend/initdb:/docker-entrypoint-initdb.d:ro
       - db-data:/var/lib/postgresql/data
+      - ./backend/prisma/migrations:/app/prisma/migrations
     restart: unless-stopped
 
   frontend:
