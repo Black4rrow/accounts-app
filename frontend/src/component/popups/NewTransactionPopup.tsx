@@ -78,6 +78,27 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
                     console.error("Error creating category", err);
                 }
                 );
+        }else{
+            axios
+                .post(`${API_URL}/transactions`, {
+                    userId,
+                    categoryLabel,
+                    amount: transactionAmount,
+                    date: transactionDate,
+                    description: transactionDescription,
+                    isExpense: isExpense,
+                })
+                .then((res) => {
+                    console.log("Transaction added:", res.data);
+                    setAmount("");
+                    setCategoryValue("");
+                    setDate("");
+                    setDescription("");
+                    closeHandler(new MouseEvent("click") as unknown as React.MouseEvent);
+                })
+                .catch((err) => {
+                    console.error("Error adding transaction", err);
+                });
         }
     };
 
