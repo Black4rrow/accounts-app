@@ -2,63 +2,93 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { CategoriesSumup } from "../utils/Types";
-import {
-    ArrowLeft, ArrowRight
-} from "lucide-react";
 
 import { formatMonthYear } from "../utils/Functions";
+import DateSelector from "./DateSelector";
 
 interface CategoriesSumupProps {
     className?: string;
     month: number;
     year: number;
+    startDate: string | null;
+    endDate: string | null;
     addMonth: () => void;
     subtractMonth: () => void;
     setMonthToNow: () => void;
+    setDates: (start: string, end: string) => void;
 }
 
-export default function CategoriesSumup({className = "", month, year, addMonth, setMonthToNow, subtractMonth}: CategoriesSumupProps) {
+export default function CategoriesSumup({ className = "", month, year, startDate, endDate, addMonth, setMonthToNow, subtractMonth, setDates }: CategoriesSumupProps) {
     const [categoriesSumup, setCategoriesSumup] = useState<Array<CategoriesSumup>>([]);
+    const [percentageMode, setPercentageMode] = useState<boolean>(false)
     const { userId } = useAuth();
 
     const API_URL = (import.meta as any).env.VITE_API_URL;
 
     useEffect(() => {
-        axios
-            .get(`${API_URL}/categories/sumup/${userId}`,
-                {
-                    params: {
-                        year: year,
-                        month: month,
-                    },
-                }
-            )
-            .then((res) => {
-                setCategoriesSumup(res.data);
-            })
-            .catch((err) => console.error("Error fetching categories sumup", err));
-    }, [userId, year, month]);
+        if (
+            startDate &&
+            endDate &&
+            new Date(startDate) instanceof Date &&
+            !isNaN(new Date(startDate).getTime()) &&
+            new Date(endDate) instanceof Date &&
+            !isNaN(new Date(endDate).getTime())
+        ) {
+            axios
+                .get(`${API_URL}/categories/sumup/range/${userId}`,
+                    {
+                        params: {
+                            start: startDate,
+                            end: endDate,
+                        },
+                    }
+                )
+                .then((res) => {
+                    setCategoriesSumup(res.data);
+                })
+                .catch((err) => console.error("Error fetching categories sumup", err));
+        } else {
+            axios
+                .get(`${API_URL}/categories/sumup/${userId}`,
+                    {
+                        params: {
+                            year: year,
+                            month: month,
+                        },
+                    }
+                )
+                .then((res) => {
+                    setCategoriesSumup(res.data);
+                })
+                .catch((err) => console.error("Error fetching categories sumup", err));
+        }
+    }, [userId, year, month, startDate, endDate]);
 
     const total = categoriesSumup.reduce((acc, category) => acc + category.totalAmount, 0);
+
+    const totalExpenses = categoriesSumup.reduce(
+        (acc, category) =>
+            category.totalAmount < 0 ? acc + category.totalAmount : acc,
+        0
+    );
+
+    const totalRevenus = categoriesSumup.reduce(
+        (acc, category) =>
+            category.totalAmount > 0 ? acc + category.totalAmount : acc,
+        0
+    );
 
     return (
         <div className={`bg-stone-800 border border-stone-700 rounded-md p-4 flex flex-col ${className}`}>
             <h2 className="text-lg font-semibold mb-4 text-white">Total par catégorie - {formatMonthYear(year, month)}</h2>
-            <div className="w-full flex flex-row justify-center mb-4">
-                <button className="text-white flex flex-row items-center border border-stone-700 rounded-l-lg p-2 cursor-pointer hover:bg-stone-700/80" onClick={subtractMonth}>
-                    <ArrowLeft className="w-5 h-5 text-white" />
-                    <p>Précédent</p>
-                </button>
 
-                <button className="text-white flex flex-row items-center border border-stone-700 p-2 cursor-pointer hover:bg-stone-700/80" onClick={setMonthToNow}>
-                    <p>Actuel</p>
-                </button>
+            <DateSelector
+                addMonth={addMonth}
+                setMonthToNow={setMonthToNow}
+                subtractMonth={subtractMonth}
+                setDates={setDates}
+            />
 
-                <button className="text-white flex flex-row items-center border border-stone-700 rounded-r-lg p-2 cursor-pointer hover:bg-stone-700/80" onClick={addMonth}>
-                    <p>Suivant</p>
-                    <ArrowRight className="w-5 h-5 text-white" />
-                </button>
-            </div>
             <div className="flex-1 overflow-y-auto">
                 {categoriesSumup.length === 0 ? (
                     <p className="text-white">Aucune donnée disponible pour cette période.</p>
@@ -67,7 +97,21 @@ export default function CategoriesSumup({className = "", month, year, addMonth, 
                         {categoriesSumup.map((category) => (
                             <li key={category.categoryLabel} className="flex justify-between px-4 mb-2 text-white">
                                 <span>{category.categoryLabel}</span>
-                                <span className={category.totalAmount < 0 ? "text-red-300" : "text-green-300"} >{category.totalAmount.toFixed(2)}</span>
+                                <span className={category.totalAmount < 0 ? "text-red-300" : "text-green-300"} onClick={() => setPercentageMode(prev => !prev)}>
+                                    {percentageMode ? (
+                                        category.totalAmount > 0 ? (
+                                            totalRevenus === 0
+                                                ? "0%"
+                                                : `${((category.totalAmount / totalRevenus) * 100).toFixed(2)}%`
+                                        ) : (
+                                            totalExpenses === 0
+                                                ? "0%"
+                                                : `${((category.totalAmount / totalExpenses) * 100).toFixed(2)}%`
+                                        )
+                                    ) : (
+                                        category.totalAmount.toFixed(2)
+                                    )}
+                                </span>
                             </li>
                         ))}
                     </ul>

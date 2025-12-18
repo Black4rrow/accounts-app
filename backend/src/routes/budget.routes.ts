@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { getAllBudgetAtDate, createBudget, deleteBudget, updateBudget } from "../controllers/budget.controller";
+import { getAllBudgetAtDate, createBudget, deleteBudget, updateBudget, getAllBudgetAtRange } from "../controllers/budget.controller";
 
 const router = Router();
 
+router.get("/budget/range/:userId", getAllBudgetAtRange);
 router.get("/budget/:userId/:month/:year", getAllBudgetAtDate);
 router.post("/budget", createBudget);
 router.delete("/budget/:userId/:categoryId/:amount/:month/:year/:all", deleteBudget);

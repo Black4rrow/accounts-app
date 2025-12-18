@@ -84,3 +84,58 @@ export async function getSumup(req: Request, res: Response) {
         res.status(500).json({ message: "Error retrieving sumup", error });
     }
 }
+
+function parseLocalDate(dateStr: string): Date {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date(y, m - 1, d, 0, 0, 0, 0);
+}
+
+export async function getSumupFromRange(req: Request, res: Response) {
+    const userId = parseInt(req.params.userId);
+    const start = req.query.start as string;
+    const end = req.query.end as string;
+
+    const startDate = parseLocalDate(start);
+    const endDate = parseLocalDate(end);
+
+    endDate.setDate(endDate.getDate() + 1);
+
+    try {
+        const grouped = await prisma.transaction.groupBy({
+            by: ['categoryId'],
+            where: {
+                userId,
+                date: {
+                    gte: startDate,
+                    lt: endDate,
+                },
+            },
+            _sum: {
+                amount: true,
+            },
+        });
+
+        const categoryIds = grouped.map(g => g.categoryId);
+
+        const categories = await prisma.category.findMany({
+            where: { categoryId: { in: categoryIds } },
+            select: { categoryId: true, categoryLabel: true },
+        });
+
+        const result = grouped.map(g => {
+            const cat = categories.find(c => c.categoryId === g.categoryId);
+
+            return {
+                categoryId: g.categoryId,
+                categoryLabel: cat?.categoryLabel ?? "Unknown",
+                totalAmount: g._sum.amount ?? 0,
+            };
+        });
+
+        result.sort((a, b) => a.totalAmount - b.totalAmount);
+
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ message: "Error retrieving sumup", error });
+    }
+}

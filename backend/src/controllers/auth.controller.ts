@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import prisma from "../config/db";
 
 const bcrypt = require('bcrypt');
-
 const jwt = require('jsonwebtoken');
+
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
 export async function login(req: Request, res: Response) {
