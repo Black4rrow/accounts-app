@@ -13,8 +13,13 @@ import Budgets from "../component/Budgets";
 
 export default function Home() {
     const [activeItem, setActiveItem] = useState<string>("home");
+
+    //variables for synchronized stats
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+    const [startDate, setStartDate] = useState<string | null>(null);
+    const [endDate, setEndDate] = useState<string | null>(null);
+
 
     const { userId, mail, logout } = useAuth();
 
@@ -29,6 +34,8 @@ export default function Home() {
         } else {
             setCurrentMonth(currentMonth + 1);
         }
+        setStartDate(null);
+        setEndDate(null);
     }
 
     function subtractMonth() {
@@ -38,12 +45,25 @@ export default function Home() {
         } else {
             setCurrentMonth(currentMonth - 1);
         }
+        setStartDate(null);
+        setEndDate(null);
     }
 
     function setMonthToNow() {
         const now = new Date();
         setCurrentYear(now.getFullYear());
         setCurrentMonth(now.getMonth() + 1);
+        setStartDate(null);
+        setEndDate(null);
+    }
+
+    function setDates(start: string, end: string) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(start) || !/^\d{4}-\d{2}-\d{2}$/.test(end)) {
+            return;
+        }
+
+        setStartDate(start);
+        setEndDate(end);
     }
 
     return (
@@ -61,7 +81,6 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 auto-rows-[100px] gap-4 w-full p-2 sm:p-6">
-                    {/*Recent transactions*/}
                     <TransactionsHistory
                         className="col-span-1 xl:col-span-3 lg:col-span-2 md:col-span-2 row-span-5 border border-stone-300 rounded-md p-2 sm:p-4 flex flex-col h-full"
                     />
@@ -70,18 +89,24 @@ export default function Home() {
                         className="col-span-1 xl:col-span-3 lg:col-span-2 md:col-span-2 row-span-5 border border-stone-300 rounded-md p-2 sm:p-4"
                         month={currentMonth}
                         year={currentYear}
+                        startDate={startDate}
+                        endDate={endDate}
                         addMonth={addMonth}
                         subtractMonth={subtractMonth}
                         setMonthToNow={setMonthToNow}
+                        setDates={setDates}
                     />
 
                     <Budgets
                         className="col-span-1 xl:col-span-4 lg:col-span-3 md:col-span-2 row-span-4 border border-stone-300 rounded-md p-2 sm:p-4"
                         month={currentMonth}
                         year={currentYear}
+                        startDate={startDate}
+                        endDate={endDate}
                         addMonth={addMonth}
                         subtractMonth={subtractMonth}
                         setMonthToNow={setMonthToNow}
+                        setDates={setDates}
                     />
                 </div>
 
