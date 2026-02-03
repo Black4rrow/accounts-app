@@ -14,7 +14,7 @@ export async function getAllusers(req: Request, res: Response) {
 }
 
 export async function getUserById(req: Request, res: Response) {
-    const userId = parseInt(req.params.id);
+    const userId = req.user!.userId;
     try {
         const user = await prisma.user.findUnique({
             where: { userId: userId },

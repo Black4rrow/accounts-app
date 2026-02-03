@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
+import api from "../../api";
 import { useAuth } from "../../context/AuthContext";
 import { X } from "lucide-react";
 import AutocompleteFreeText from "../AutoCompleteInput";
@@ -30,7 +30,7 @@ const NewBudgetPopup: React.FC<NewBudgetPopupProps> = (props) => {
 
     async function fetchCategories() {
         try {
-            const response = await axios.get(`${API_URL}/categories/${userId}`);
+            const response = await api.get(`/categories`);
             setCategories(response.data);
         } catch (error) {
             console.error("Error fetching categories", error);
@@ -48,9 +48,8 @@ const NewBudgetPopup: React.FC<NewBudgetPopupProps> = (props) => {
             return;
         }
 
-        axios
-            .post(`${API_URL}/budget`, {
-                userId,
+        api
+            .post(`/budget`, {
                 categoryId: selectedCategoryId,
                 amount: budgetAmount,
                 month: props.month,

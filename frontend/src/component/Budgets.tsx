@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { CategoriesSumup, Budget } from "../utils/Types";
 import ProgressBar from "./ProgressBar"
@@ -51,8 +51,8 @@ export default function Budgets({ className = "", month, year, startDate, endDat
             new Date(endDate) instanceof Date &&
             !isNaN(new Date(endDate).getTime())
         ) {
-            axios
-                .get(`${API_URL}/budget/range/${userId}`,
+            api
+                .get(`/budget/range`,
                     {
                         params: {
                             start: startDate,
@@ -68,8 +68,8 @@ export default function Budgets({ className = "", month, year, startDate, endDat
                     setBudgets([]);
                 });
         } else {
-            axios
-                .get(`${API_URL}/budget/${userId}/${month}/${year}`)
+            api
+                .get(`/budget/${month}/${year}`)
                 .then((res) => {
                     setBudgets(res.data);
                 })
@@ -89,8 +89,8 @@ export default function Budgets({ className = "", month, year, startDate, endDat
             new Date(endDate) instanceof Date &&
             !isNaN(new Date(endDate).getTime())
         ) {
-            axios
-                .get(`${API_URL}/categories/sumup/range/${userId}`,
+            api
+                .get(`/categories/sumup/range`,
                     {
                         params: {
                             start: startDate,
@@ -103,8 +103,8 @@ export default function Budgets({ className = "", month, year, startDate, endDat
                 })
                 .catch((err) => console.error("Error fetching categories sumup", err));
         } else {
-            axios
-                .get(`${API_URL}/categories/sumup/${userId}`,
+            api
+                .get(`/categories/sumup`,
                     {
                         params: {
                             year: year,

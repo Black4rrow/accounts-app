@@ -2,12 +2,13 @@ import { Request, Response } from "express";
 import prisma from "../config/db";
 
 export async function getAllBudgetAtDate(req: Request, res: Response) {
-    const { userId, month, year } = req.params;
+    const { month, year } = req.params;
+    const userId = req.user!.userId;
 
     try {
         const budget = await prisma.budget.findMany({
             where: {
-                userId: parseInt(userId),
+                userId: userId,
                 month: parseInt(month),
                 year: parseInt(year),
             },
@@ -30,7 +31,7 @@ export async function getAllBudgetAtDate(req: Request, res: Response) {
 }
 
 export async function getAllBudgetAtRange(req: Request, res: Response) {
-    const userId = Number(req.params.userId);
+    const userId = req.user!.userId;
     const start = req.query.start as string;
     const end = req.query.end as string;
 
@@ -107,7 +108,8 @@ export async function getAllBudgetAtRange(req: Request, res: Response) {
 }
 
 export async function createBudget(req: Request, res: Response) {
-    const { userId, categoryId, amount, month, year, extendMonth } = req.body;
+    const { categoryId, amount, month, year, extendMonth } = req.body;
+    const userId = req.user!.userId;
     let budgetsToCreate = [];
     const totalMonths = extendMonth || 0;
 
@@ -117,7 +119,7 @@ export async function createBudget(req: Request, res: Response) {
             const y = year + Math.floor((month - 1 + i) / 12);
 
             budgetsToCreate.push({
-                userId: parseInt(userId),
+                userId: userId,
                 categoryId: parseInt(categoryId),
                 amount: parseFloat(amount),
                 month: m,
@@ -134,12 +136,14 @@ export async function createBudget(req: Request, res: Response) {
 }
 
 export async function deleteBudget(req: Request, res: Response) {
-    const { userId, categoryId, amount, month, year, all } = req.params;
+    const { categoryId, amount, month, year, all } = req.params;
+    const userId = req.user!.userId;
+
     try {
         if (all === 'true') {
             await prisma.budget.deleteMany({
                 where: {
-                    userId: parseInt(userId),
+                    userId: userId,
                     categoryId: parseInt(categoryId),
                     month: {
                         gte: parseInt(month),
@@ -152,7 +156,7 @@ export async function deleteBudget(req: Request, res: Response) {
         } else {
             await prisma.budget.deleteMany({
                 where: {
-                    userId: parseInt(userId),
+                    userId: userId,
                     categoryId: parseInt(categoryId),
                     amount: parseFloat(amount),
                     month: parseInt(month),
@@ -167,7 +171,8 @@ export async function deleteBudget(req: Request, res: Response) {
 }
 
 export async function updateBudget(req: Request, res: Response) {
-    const { userId, categoryId, month, year, all } = req.params;
+    const { categoryId, month, year, all } = req.params;
+    const userId = req.user!.userId;
     const { amount } = req.body;
 
     try {
@@ -175,7 +180,7 @@ export async function updateBudget(req: Request, res: Response) {
         if (all === 'true') {
             updatedBudget = await prisma.budget.updateMany({
                 where: {
-                    userId: parseInt(userId),
+                    userId: userId,
                     categoryId: parseInt(categoryId),
                     month: {
                         gte: parseInt(month),
@@ -191,7 +196,7 @@ export async function updateBudget(req: Request, res: Response) {
         } else {
             updatedBudget = await prisma.budget.updateMany({
                 where: {
-                    userId: parseInt(userId),
+                    userId: userId,
                     categoryId: parseInt(categoryId),
                     month: parseInt(month),
                     year: parseInt(year),

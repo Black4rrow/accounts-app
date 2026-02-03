@@ -22,7 +22,7 @@ export default function AutocompleteFreeText({
     onSelect,
     onDelete,
     className = "",
-    maxSuggestions = 8,
+    maxSuggestions = 20,
 }: AutocompleteFreeTextProps) {
     const [inputValue, setInputValue] = useState(value ?? "");
     const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +38,7 @@ export default function AutocompleteFreeText({
     }, [value]);
 
     const filtered = options
-        .filter((o: Opt) => o.label.toLowerCase().includes((inputValue ?? "").toLowerCase().trim()))
+        .filter((o: Opt) => normalize(o.label).includes(normalize(inputValue ?? "")))
         .slice(0, maxSuggestions);
 
     useEffect(() => {
@@ -171,4 +171,12 @@ export default function AutocompleteFreeText({
             )}
         </div>
     );
+}
+
+function normalize(str: string) {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
 }

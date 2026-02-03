@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import axios from "axios";
+import api from "../api";
 import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 
@@ -20,8 +20,8 @@ export default function Statistics() {
 
     async function fetchMonthlyTransactions() {
         try {
-            await axios
-                .get(`${API_URL}/transactions/monthly/${userId}`, { params: { month: currentMonth, year: currentYear } })
+            await api
+                .get(`/transactions/monthly`, { params: { month: currentMonth, year: currentYear } })
                 .then((res) => {
                     setMonthlyTransactions(res.data);
                 });

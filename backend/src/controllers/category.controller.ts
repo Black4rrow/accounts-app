@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../config/db";
 
 export async function getAllCategories(req: Request, res: Response) {
-    const userId = parseInt(req.params.userId);
+    const userId = req.user!.userId;
     try {
         const categories = await prisma.category.findMany(
             { where: { userId: userId } }
@@ -14,7 +14,8 @@ export async function getAllCategories(req: Request, res: Response) {
 }
 
 export async function createCategory(req: Request, res: Response) {
-    const { userId, categoryLabel } = req.body;
+    const { categoryLabel } = req.body;
+    const userId = req.user!.userId;
     try {
         const newCategory = await prisma.category.create({
             data: {
@@ -41,7 +42,7 @@ export async function deleteCategory(req: Request, res: Response) {
 }
 
 export async function getSumup(req: Request, res: Response) {
-    const userId = parseInt(req.params.userId);
+    const userId = req.user!.userId;
     const year = parseInt(req.query.year as string);
     const month = parseInt(req.query.month as string);
 
@@ -91,7 +92,7 @@ function parseLocalDate(dateStr: string): Date {
 }
 
 export async function getSumupFromRange(req: Request, res: Response) {
-    const userId = parseInt(req.params.userId);
+    const userId = req.user!.userId;
     const start = req.query.start as string;
     const end = req.query.end as string;
 
