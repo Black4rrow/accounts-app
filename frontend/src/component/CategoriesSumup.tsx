@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { CategoriesSumup } from "../utils/Types";
 
@@ -34,8 +34,8 @@ export default function CategoriesSumup({ className = "", month, year, startDate
             new Date(endDate) instanceof Date &&
             !isNaN(new Date(endDate).getTime())
         ) {
-            axios
-                .get(`${API_URL}/categories/sumup/range/${userId}`,
+            api
+                .get(`/categories/sumup/range`,
                     {
                         params: {
                             start: startDate,
@@ -48,8 +48,8 @@ export default function CategoriesSumup({ className = "", month, year, startDate
                 })
                 .catch((err) => console.error("Error fetching categories sumup", err));
         } else {
-            axios
-                .get(`${API_URL}/categories/sumup/${userId}`,
+            api
+                .get(`/categories/sumup`,
                     {
                         params: {
                             year: year,

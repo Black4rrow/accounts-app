@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { Transaction } from "../utils/Types";
 import { Trash2 } from "lucide-react";
@@ -64,7 +64,7 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
 
         try {
             const start = offset * TRANSACTIONS_TO_FETCH;
-            const res = await axios.get(`${API_URL}/transactions/${userId}`, { params: { limit: limit, offset: start } });
+            const res = await api.get(`/transactions`, { params: { limit: limit, offset: start } });
 
             if (tokenAtCall !== fetchTokenRef.current) {
                 return;
@@ -97,7 +97,7 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
 
     async function deleteTransaction(transactionId: number) {
         try {
-            await axios.delete(`${API_URL}/transactions/${transactionId}`);
+            await api.delete(`/transactions/${transactionId}`);
             bumpFetchToken();
             setRecentTransactions([]);
             setCurrentOffset(0);

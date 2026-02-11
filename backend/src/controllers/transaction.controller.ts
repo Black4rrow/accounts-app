@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import prisma from "../config/db";
 
 export async function createTransaction(req: Request, res: Response) {
-    var { userId, amount, categoryLabel, description, date, isExpense } = req.body;
+    var { amount, categoryLabel, description, date, isExpense } = req.body;
+    const userId = req.user!.userId;
 
     if(isExpense) {
         amount = -Math.abs(amount);
@@ -39,14 +40,17 @@ export async function createTransaction(req: Request, res: Response) {
 }
 
 export async function getUserTransactions(req: Request, res: Response) {
-    const { userId } = req.params;
-    const userIdInt = parseInt(userId);
+    const userId = req.user!.userId;
+    const userIdInt = userId;
     const limit = req.query.limit as string;
     const offset = req.query.offset as string;
     try {
         const transactions = await prisma.transaction.findMany({
             where: { userId: userIdInt },
-            orderBy: { createdAt: 'desc' },
+            orderBy: [
+                { date: 'desc' },
+                { createdAt: 'desc' }
+            ],
             take: limit ? parseInt(limit) : undefined,
             skip: offset ? parseInt(offset) : undefined,
             include: {
@@ -67,8 +71,8 @@ export async function getUserTransactions(req: Request, res: Response) {
 } 
 
 export async function getMonthlyTransactions(req: Request, res: Response) {
-    const { userId } = req.params;
-    const userIdInt = parseInt(userId);
+    const userId = req.user!.userId;
+    const userIdInt = userId;
     const month = parseInt(req.query.month as string);
     const year = parseInt(req.query.year as string);
     try {

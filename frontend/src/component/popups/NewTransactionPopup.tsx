@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import api from "../../api";
 import PropTypes from "prop-types";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { X } from "lucide-react";
 import AutocompleteFreeText from "../AutoCompleteInput";
@@ -30,7 +30,7 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
 
     async function fetchCategories() {
         try {
-            const response = await axios.get(`${API_URL}/categories/${userId}`);
+            const response = await api.get(`/categories`);
             setCategories(response.data);
         } catch (error) {
             console.error("Error fetching categories", error);
@@ -45,17 +45,15 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
         const transactionDescription = description;
 
         if (categories.find(cat => cat.categoryLabel === categoryLabel) === undefined) {
-            axios.post(`${API_URL}/categories`, {
-                userId,
+            api.post(`/categories`, {
                 categoryLabel,
             })
                 .then(() => {
                     console.log("Category created:", categoryLabel);
                     fetchCategories();
 
-                    axios
-                        .post(`${API_URL}/transactions`, {
-                            userId,
+                    api
+                        .post(`/transactions`, {
                             categoryLabel,
                             amount: transactionAmount,
                             date: transactionDate,
@@ -79,9 +77,8 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
                 }
                 );
         }else{
-            axios
-                .post(`${API_URL}/transactions`, {
-                    userId,
+            api
+                .post(`/transactions`, {
                     categoryLabel,
                     amount: transactionAmount,
                     date: transactionDate,
@@ -104,7 +101,7 @@ const NewTransactionPopup: React.FC<NewTransactionPopupProps> = (props) => {
 
     const deleteCategory = async (categoryId: number) => {
         try {
-            await axios.delete(`${API_URL}/categories/${categoryId}`);
+            await api.delete(`/categories/${categoryId}`);
             fetchCategories();
         } catch (error) {
             console.error("Error deleting category", error);
