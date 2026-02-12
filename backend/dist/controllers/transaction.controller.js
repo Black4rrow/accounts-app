@@ -1,27 +1,32 @@
-import { Request, Response } from "express";
-import prisma from "../config/db";
-
-export async function createTransaction(req: Request, res: Response) {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createTransaction = createTransaction;
+exports.updateTransaction = updateTransaction;
+exports.getUserTransactions = getUserTransactions;
+exports.getMonthlyTransactions = getMonthlyTransactions;
+exports.deleteTransaction = deleteTransaction;
+const db_1 = __importDefault(require("../config/db"));
+async function createTransaction(req, res) {
     var { amount, categoryLabel, description, date, isExpense } = req.body;
-    const userId = req.user!.userId;
-
-    if(isExpense) {
+    const userId = req.user.userId;
+    if (isExpense) {
         amount = -Math.abs(amount);
     }
-
-    let category = await prisma.category.findFirst({
+    let category = await db_1.default.category.findFirst({
         where: {
             userId,
             categoryLabel,
         },
     });
-    let categoryId: number;
+    let categoryId;
     if (category) {
         categoryId = category.categoryId;
         console.log(`Found existing category '${categoryLabel}' with ID ${categoryId}`);
-
         try {
-            const newTransaction = await prisma.transaction.create({
+            const newTransaction = await db_1.default.transaction.create({
                 data: {
                     userId,
                     amount,
@@ -31,35 +36,33 @@ export async function createTransaction(req: Request, res: Response) {
                 },
             });
             res.status(201).json(newTransaction);
-        } catch (error) {
+        }
+        catch (error) {
             res.status(500).json({ message: "Error creating transaction", error });
         }
-    } else {
+    }
+    else {
         res.status(500).json({ message: "Error creating transaction (category was not created)" });
     }
 }
-
-export async function updateTransaction(req: Request, res: Response) {
+async function updateTransaction(req, res) {
     var { amount, categoryLabel, description, date, isExpense } = req.body;
-    const userId = req.user!.userId;
-
-    if(isExpense) {
+    const userId = req.user.userId;
+    if (isExpense) {
         amount = -Math.abs(amount);
     }
-
-    let category = await prisma.category.findFirst({
+    let category = await db_1.default.category.findFirst({
         where: {
             userId,
             categoryLabel,
         },
     });
-    let categoryId: number;
+    let categoryId;
     if (category) {
         categoryId = category.categoryId;
         console.log(`Found existing category '${categoryLabel}' with ID ${categoryId}`);
-
         try {
-            const newTransaction = await prisma.transaction.update({
+            const newTransaction = await db_1.default.transaction.update({
                 where: {
                     transactionId: req.params.transactionId ? parseInt(req.params.transactionId) : undefined,
                 },
@@ -72,21 +75,22 @@ export async function updateTransaction(req: Request, res: Response) {
                 },
             });
             res.status(201).json(newTransaction);
-        } catch (error) {
+        }
+        catch (error) {
             res.status(500).json({ message: "Error creating transaction", error });
         }
-    } else {
+    }
+    else {
         res.status(500).json({ message: "Error creating transaction (category was not created)" });
     }
 }
-
-export async function getUserTransactions(req: Request, res: Response) {
-    const userId = req.user!.userId;
+async function getUserTransactions(req, res) {
+    const userId = req.user.userId;
     const userIdInt = userId;
-    const limit = req.query.limit as string;
-    const offset = req.query.offset as string;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     try {
-        const transactions = await prisma.transaction.findMany({
+        const transactions = await db_1.default.transaction.findMany({
             where: { userId: userIdInt },
             orderBy: [
                 { date: 'desc' },
@@ -106,25 +110,25 @@ export async function getUserTransactions(req: Request, res: Response) {
             description: t.description,
             categoryLabel: t.category.categoryLabel
         })));
-    } catch (error) {
+    }
+    catch (error) {
         res.status(500).json({ message: "Error retrieving transactions", error });
     }
-} 
-
-export async function getMonthlyTransactions(req: Request, res: Response) {
-    const userId = req.user!.userId;
+}
+async function getMonthlyTransactions(req, res) {
+    const userId = req.user.userId;
     const userIdInt = userId;
-    const month = parseInt(req.query.month as string);
-    const year = parseInt(req.query.year as string);
+    const month = parseInt(req.query.month);
+    const year = parseInt(req.query.year);
     try {
-        const transactions = await prisma.transaction.findMany({
-            where: { 
+        const transactions = await db_1.default.transaction.findMany({
+            where: {
                 userId: userIdInt,
-                date : {
+                date: {
                     gte: new Date(year, month - 1, 1),
                     lt: new Date(year, month, 1)
                 }
-             },
+            },
             orderBy: { createdAt: 'desc' },
             include: {
                 category: true,
@@ -138,19 +142,20 @@ export async function getMonthlyTransactions(req: Request, res: Response) {
             description: t.description,
             categoryLabel: t.category.categoryLabel
         })));
-    } catch (error) {
+    }
+    catch (error) {
         res.status(500).json({ message: "Error retrieving transactions", error });
     }
-} 
-
-export async function deleteTransaction(req: Request, res: Response) {
+}
+async function deleteTransaction(req, res) {
     const transactionId = parseInt(req.params.transactionId);
     try {
-        await prisma.transaction.delete({
+        await db_1.default.transaction.delete({
             where: { transactionId: transactionId },
         });
         res.status(200).json({ message: "Transaction deleted successfully" });
-    } catch (error) {
+    }
+    catch (error) {
         res.status(500).json({ message: "Error deleting transaction", error });
     }
 }

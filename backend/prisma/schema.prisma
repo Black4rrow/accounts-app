@@ -5,44 +5,49 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
-  output   = "../src/generated/prisma"
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+    output        = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
 }
 
 model User {
-    userId    Int      @id @default(autoincrement())
-    firstname String
-    lastname  String
-    mail     String   @unique
-    password  String
+    userId      Int    @id @default(autoincrement())
+    firstname   String
+    lastname    String
+    mail        String @unique
+    password    String
     phoneNumber String
+
+    recurringTransactions RecurringTransaction[]
 }
 
 model Category {
-    categoryId Int     @id @default(autoincrement())
-    categoryLabel String
-    userId     Int
+    categoryId         Int                 @id @default(autoincrement())
+    categoryLabel      String
+    userId             Int
+    transactions       Transaction[]
+    recurringTransactions RecurringTransaction[]
+    budgets            Budget[]
 
     @@unique([categoryLabel, userId])
-    transactions Transaction[]
-    budgets      Budget[]
 }
 
 model Transaction {
-    transactionId Int    @id @default(autoincrement())
+    transactionId Int      @id @default(autoincrement())
     amount        Float
     date          DateTime
     description   String
     categoryId    Int
     userId        Int
     createdAt     DateTime @default(now())
+    recurringId   Int?
 
-    category Category @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade)
+    category  Category              @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade)
+    recurring RecurringTransaction? @relation(fields: [recurringId], references: [id])
 }
 
 model Budget {
@@ -52,7 +57,31 @@ model Budget {
     userId     Int
     amount     Float
 
-    @@id([categoryId, month, year, userId])
-
     category Category @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade)
+
+    @@id([categoryId, month, year, userId])
+}
+
+model RecurringTransaction {
+    id          Int       @id @default(autoincrement())
+    userId      Int
+    categoryId  Int
+    amount      Float
+    description String?
+    dayOfMonth  Int
+    timeOfDay   String?
+    timezone    String
+    nextRunAt   DateTime?
+    lastRunAt   DateTime?
+    frequency   String    @default("monthly")
+    active      Boolean   @default(true)
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    user     User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    category Category @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade)
+    transactions Transaction[]
+
+    @@index([userId])
+    @@index([nextRunAt])
 }

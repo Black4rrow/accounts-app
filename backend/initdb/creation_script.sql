@@ -33,3 +33,17 @@ CREATE TABLE IF NOT EXISTS "Budget" (
   "amount" decimal,
   PRIMARY KEY ("categoryId", "month", "year", "userId")
 );
+
+CREATE TABLE IF NOT EXISTS "RecurringTransaction" (
+  "id" serial PRIMARY KEY,
+  "userId" integer REFERENCES "User"("userId"),
+  "categoryId" integer REFERENCES "Category"("categoryId"),
+  "amount" decimal,
+  "description" varchar(255),
+  "cronExpression" varchar(255),
+  "timezone" varchar(255),
+  "active" boolean DEFAULT true,
+  "createdAt" timestamp DEFAULT CURRENT_TIMESTAMP,
+  "lastRunAt" timestamp,
+  "nextRunAt" timestamp
+);

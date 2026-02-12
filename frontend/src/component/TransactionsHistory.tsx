@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { Transaction } from "../utils/Types";
 import { Trash2 } from "lucide-react";
-import NewTransactionPopup from "../component/popups/NewTransactionPopup";
+import NewTransactionPopup from "./popups/TransactionPopup";
 import { replace } from "react-router";
 
 interface TransactionsHistoryProps {
@@ -16,6 +16,8 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
     const [showNewTransactionPopup, setShowNewTransactionPopup] = useState<boolean>(false);
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const [hasMore, setHasMore] = useState<boolean>(true);
+
+    const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -33,12 +35,18 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
     const newTransactionPopupCloseHandler = (open: boolean) => {
         setShowNewTransactionPopup(open);
         if (!open) {
+            setTransactionToEdit(null);
             bumpFetchToken();
             setRecentTransactions([]);
             setCurrentOffset(0);
             setHasMore(true);
             fetchNewTransactionsPage(TRANSACTIONS_TO_FETCH, 0, { replace: true, force: true });
         }
+    };
+
+    const openEditPopup = (transaction: Transaction) => {
+        setTransactionToEdit(transaction);
+        newTransactionPopupCloseHandler(true);
     };
 
     const handleScroll = () => {
@@ -117,6 +125,7 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
             <NewTransactionPopup
                 onClose={newTransactionPopupCloseHandler}
                 show={showNewTransactionPopup}
+                transaction={transactionToEdit || undefined}
             />
             <h2 className="text-white text-2xl mb-4">Dernières transactions</h2>
 
@@ -156,7 +165,7 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
                             }
 
                             return (
-                                <>
+                                <React.Fragment key={transaction.transactionId}>
                                     {showMonthHeader && (
                                         <li className="w-full py-2 px-3 mt-8 bg-none border border-0 border-b-1 border-stone-300 text-stone-300 font-semibold">
                                             {currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)} {currentYear}
@@ -164,13 +173,16 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
                                     )}
 
                                     <li
-                                        key={transaction.transactionId}
-                                        className="group relative grid grid-cols-12 items-center h-16"
+                                        className="group relative cursor-pointer hover:bg-stone-700 grid grid-cols-12 items-center h-16"
+                                        onClick={ () => {openEditPopup(transaction)} }
                                     >
                                         <button
-                                            onClick={() => deleteTransaction(transaction.transactionId)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                deleteTransaction(transaction.transactionId);
+                                            }}
                                             aria-label="Supprimer transaction"
-                                            className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-200/90 sm:bg-none p-2 sm:p-1 rounded-md hover:bg-red-600/20 z-20"
+                                            className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-200/90 sm:bg-none p-2 sm:p-1 rounded-md hover:bg-red-600/75 z-20 cursor-pointer"
                                             type="button"
                                         >
                                             <Trash2 className="w-4 h-4 text-red-800 sm:text-red-600" />
@@ -197,7 +209,7 @@ export default function TransactionsHistory(props: TransactionsHistoryProps) {
                                             </div>
                                         </div>
                                     </li>
-                                </>
+                                </React.Fragment>
                             )
                         })}
                     </ul>

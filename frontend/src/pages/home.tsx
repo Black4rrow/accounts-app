@@ -9,6 +9,7 @@ import SideBar from "../component/SideBar";
 import CategoriesSumup from "../component/CategoriesSumup";
 import TransactionsHistory from "../component/TransactionsHistory";
 import Budgets from "../component/Budgets";
+import RecurringTransactions from "../component/RecurringTransactions";
 
 export default function Home() {
     const [activeItem, setActiveItem] = useState<string>("home");
@@ -97,7 +98,7 @@ export default function Home() {
                     />
 
                     <Budgets
-                        className="col-span-1 xl:col-span-4 lg:col-span-3 md:col-span-2 row-span-4 border border-stone-300 rounded-md p-2 sm:p-4"
+                        className="col-span-1 xl:col-span-2 lg:col-span-2 md:col-span-2 row-span-4 border border-stone-300 rounded-md p-2 sm:p-4"
                         month={currentMonth}
                         year={currentYear}
                         startDate={startDate}
@@ -107,6 +108,11 @@ export default function Home() {
                         setMonthToNow={setMonthToNow}
                         setDates={setDates}
                     />
+
+                    <RecurringTransactions
+                        className="col-span-1 xl:col-span-4 lg:col-span-2 md:col-span-2 row-span-4 border border-stone-300 rounded-md p-2 sm:p-4"
+                        />
+
                 </div>
 
             </main>
