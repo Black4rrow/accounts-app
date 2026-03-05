@@ -21,6 +21,20 @@ services:
           action: rebuild
     command: ["npm", "run", "start:ts"]
 
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: recurring-worker
+    env_file:
+      - ./backend/.env.docker
+    networks:
+      - internal
+    depends_on:
+      - db
+    restart: unless-stopped
+    command: ["node", "dist/workers/workerDaemon.js"]
+
   db:
     image: postgres:15
     container_name: postgres
@@ -28,6 +42,8 @@ services:
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: dev
       POSTGRES_DB: accounts-app-db
+    ports:
+      - "5432:5432"
     networks:
       - internal
     #ports:

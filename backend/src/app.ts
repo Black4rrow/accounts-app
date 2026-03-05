@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes';
 import transactionRoutes from './routes/transaction.routes';
 import categoryRoutes from './routes/category.routes';
 import budgetRoutes from './routes/budget.routes';
+import recurringRoutes from './routes/recurring.routes';
 
 const app = express();
 
@@ -17,5 +18,6 @@ app.use('/api', authRoutes);
 app.use('/api', transactionRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', budgetRoutes);
+app.use('/api', recurringRoutes);
 
 export default app;

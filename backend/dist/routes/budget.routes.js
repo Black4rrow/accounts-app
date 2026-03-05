@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const budget_controller_1 = require("../controllers/budget.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const router = (0, express_1.Router)();
+router.get("/budget/range/", auth_middleware_1.authenticateToken, budget_controller_1.getAllBudgetAtRange);
+router.get("/budget/:month/:year", auth_middleware_1.authenticateToken, budget_controller_1.getAllBudgetAtDate);
+router.post("/budget", auth_middleware_1.authenticateToken, budget_controller_1.createBudget);
+router.delete("/budget/:categoryId/:amount/:month/:year/:all", auth_middleware_1.authenticateToken, budget_controller_1.deleteBudget);
+router.put("/budget/:categoryId/:month/:year/:all", auth_middleware_1.authenticateToken, budget_controller_1.updateBudget);
+exports.default = router;

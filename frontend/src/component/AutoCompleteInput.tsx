@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Trash2 } from "lucide-react";
 
-type Opt = { id: number; label: string };
+type Opt = { id: number | string; label: string };
 
 interface AutocompleteFreeTextProps {
     options: Opt[];
@@ -20,7 +20,6 @@ export default function AutocompleteFreeText({
     placeholder,
     onChange,
     onSelect,
-    onDelete,
     className = "",
     maxSuggestions = 20,
 }: AutocompleteFreeTextProps) {
@@ -153,16 +152,6 @@ export default function AutocompleteFreeText({
                                     : "text-gray-200 hover:bg-gray-700"
                                     }`}
                             >
-                                <button
-                                    type="button"
-                                    onMouseDown={(e) => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                        onDelete?.(opt.id);
-                                    }}
-                                    className={`${onDelete ? "" : "hidden"} absolute right-3 top-1/2 -translate-y-1/2 p-1 opacity-0 group-hover:opacity-100 hover:bg-red-600/20 rounded-md cursor-pointer`}>
-                                    <Trash2 className="w-4 h-4 text-red-600" />
-                                </button>
                                 {opt.label}
                             </li>
                         );
